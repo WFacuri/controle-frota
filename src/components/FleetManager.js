@@ -18,7 +18,7 @@ const mockFirebase = {
       set: (data) => Promise.resolve(),
       update: (data) => Promise.resolve(),
       delete: () => Promise.resolve(),
-      get: () => Promise.resolve({ exists: true, data: () => data })
+      get: () => Promise.resolve({ exists: true, data: () => ({}) })
     }),
     add: (data) => Promise.resolve({ id: Date.now().toString() }),
     get: () => Promise.resolve({
