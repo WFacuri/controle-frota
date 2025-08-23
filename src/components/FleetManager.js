@@ -1,45 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Truck, Fuel, Wrench, MapPin, BarChart3, Plus, Edit, Trash2, Save, X, LogOut, User, Lock } from 'lucide-react';
 
-// Configuração do Firebase (substitua pelas suas credenciais)
+// --- Configuração do Firebase ---
+
+// Suas chaves de acesso que você pegou do Firebase
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY_AQUI",
-  authDomain: "seu-projeto.firebaseapp.com",
-  projectId: "seu-projeto-id",
-  storageBucket: "seu-projeto.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "sua-app-id"
+  apiKey: "AIzaSyBCwbJKf4D3rDWZS37eN-UhtAYyi8-P9So",
+  authDomain: "controle-frota-3a8d6.firebaseapp.com",
+  projectId: "controle-frota-3a8d6",
+  storageBucket: "controle-frota-3a8d6.firebasestorage.app",
+  messagingSenderId: "776347690193",
+  appId: "1:776347690193:web:b54696a6cd6e117ed411f0"
 };
+ 
+// Inicializa o Firebase e conecta aos serviços que vamos usar
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Simulação das funções do Firebase (para funcionar sem configuração real)
-const mockFirebase = {
-  collection: (name) => ({
-    doc: (id) => ({
-      set: (data) => Promise.resolve(),
-      update: (data) => Promise.resolve(),
-      delete: () => Promise.resolve(),
-      get: () => Promise.resolve({ exists: true, data: () => ({}) }),
-    }),
-    add: (data) => Promise.resolve({ id: Date.now().toString() }),
-    get: () => Promise.resolve({
-      docs: []
-    }),
-    where: () => ({
-      get: () => Promise.resolve({ docs: [] })
-    })
-  })
-};
-
-const FleetManager = () => {
-  // Sistema de autenticação
-  const [user, setUser] = useState(null);
-  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+// --- Fim da Configuração do Firebase ---
 
   // Usuários de exemplo (em produção, viria do backend)
   const users = [
-    { id: 1, username: 'admin', password: 'admin123', name: 'João Silva', role: 'admin' },
-    { id: 2, username: 'gerente', password: 'gerente123', name: 'Maria Santos', role: 'manager' },
-    { id: 3, username: 'motorista', password: 'motorista123', name: 'Carlos Oliveira', role: 'driver' }
+    { id: 1, username: 'admin', password: 'admin123', name: 'Facuri', role: 'admin' },
+    { id: 2, username: 'gerente', password: 'gerente123', name: 'Gerente de Frota', role: 'manager' },
+    { id: 3, username: 'motorista', password: 'motorista123', name: 'Motorista', role: 'driver' }
   ];
 
   // Estados para controle de loading
