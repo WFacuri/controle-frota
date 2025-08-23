@@ -1,6 +1,6 @@
 /* global firebase */
 
-// Forçando a atualização para a Vercel - v4
+// Forçando a atualização para a Vercel - v5
 import React, { useState, useEffect } from 'react';
 import { Truck, Fuel, Wrench, MapPin, BarChart3, Edit, Trash2, Save, X, LogOut, User, Lock } from 'lucide-react';
 
