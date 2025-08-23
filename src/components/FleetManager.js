@@ -131,7 +131,6 @@ const FleetManager = () => {
               dataToSave.authorUid = user.uid;
               await db.collection(collectionName).add(dataToSave);
           }
-          // Recarrega os dados dessa coleção
           const updatedCollection = await db.collection(collectionName).where("authorUid", "==", user.uid).get();
           const stateSetter = {
               vehicles: setVehicles, fuelings: setFuelings, maintenances: setMaintenances, trips: setTrips
@@ -300,107 +299,4 @@ const FleetManager = () => {
       </div>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loadingData && <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">Carregando dados...</div>}
-        
-        {activeTab === 'dashboard' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold text-gray-700">Total de Veículos</h3>
-                    <p className="text-3xl font-bold text-blue-600 mt-2">{vehicles.length}</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold text-gray-700">Total de Viagens</h3>
-                    <p className="text-3xl font-bold text-green-600 mt-2">{trips.length}</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold text-gray-700">Manutenções Registradas</h3>
-                    <p className="text-3xl font-bold text-yellow-600 mt-2">{maintenances.length}</p>
-                </div>
-            </div>
-        )}
-
-        {activeTab === 'vehicles' && canAccess(['admin', 'manager']) && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">{editingItem ? 'Editar Veículo' : 'Adicionar Novo Veículo'}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Placa</label>
-                  <input type="text" placeholder="ABC-1234" value={vehicleForm.plate} onChange={(e) => setVehicleForm({ ...vehicleForm, plate: e.target.value })} className="w-full p-2 border rounded"/>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
-                  <input type="text" placeholder="Ex: Volvo FH" value={vehicleForm.model} onChange={(e) => setVehicleForm({ ...vehicleForm, model: e.target.value })} className="w-full p-2 border rounded"/>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ano</label>
-                  <input type="number" placeholder="2020" value={vehicleForm.year} onChange={(e) => setVehicleForm({ ...vehicleForm, year: e.target.value })} className="w-full p-2 border rounded"/>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-                  <select value={vehicleForm.type} onChange={(e) => setVehicleForm({ ...vehicleForm, type: e.target.value })} className="w-full p-2 border rounded">
-                    <option value="Caminhão Truck">Caminhão Truck</option>
-                    <option value="Caminhão 3/4">Caminhão 3/4</option>
-                    <option value="Caminhão Boiadeiro">Caminhão Boiadeiro</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Km Atual</label>
-                  <input type="number" placeholder="125000" value={vehicleForm.currentKm} onChange={(e) => setVehicleForm({ ...vehicleForm, currentKm: parseInt(e.target.value) || 0 })} className="w-full p-2 border rounded"/>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <button onClick={handleSaveVehicle} className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  <Save className="w-4 h-4 mr-2" />
-                  {editingItem ? 'Atualizar' : 'Salvar'}
-                </button>
-                {editingItem && (
-                  <button onClick={() => { setEditingItem(null); setVehicleForm({ plate: '', model: '', year: '', type: 'Caminhão Truck', currentKm: 0 }); }} className="flex items-center px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancelar
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-4">Veículos Cadastrados</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="p-2 font-semibold">Placa</th>
-                      <th className="p-2 font-semibold">Modelo</th>
-                      <th className="p-2 font-semibold">Ano</th>
-                      <th className="p-2 font-semibold">Tipo</th>
-                      <th className="p-2 font-semibold">Km Atual</th>
-                      <th className="p-2 font-semibold">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vehicles.map(v => (
-                      <tr key={v.id} className="border-b hover:bg-gray-50">
-                        <td className="p-2">{v.plate}</td>
-                        <td className="p-2">{v.model}</td>
-                        <td className="p-2">{v.year}</td>
-                        <td className="p-2">{v.type}</td>
-                        <td className="p-2">{v.currentKm ? v.currentKm.toLocaleString() : 0}</td>
-                        <td className="p-2 flex gap-2">
-                          <button onClick={() => { setEditingItem(v); setVehicleForm(v); }} className="p-1 text-blue-600 hover:bg-blue-100 rounded" title="Editar"><Edit className="w-4 h-4"/></button>
-                          <button onClick={() => handleDelete('vehicles', v.id)} className="p-1 text-red-600 hover:bg-red-100 rounded" title="Apagar"><Trash2 className="w-4 h-4"/></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-      </main>
-    </div>
-  );
-};
-
-export default FleetManager;
+      <main className="max-w-7xl mx-auto px-4 sm
